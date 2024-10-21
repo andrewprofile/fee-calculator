@@ -15,9 +15,4 @@ final class InvalidArgumentException extends \InvalidArgumentException
     {
         return new self('The loan amount is out of the range.');
     }
-
-    public static function loanIsInvalid(): self
-    {
-        return new self('The loan is invalid.');
-    }
 }

@@ -7,17 +7,14 @@ namespace PragmaGoTech\Interview\Service;
 use PragmaGoTech\Interview\Exception\InvalidArgumentException;
 use PragmaGoTech\Interview\Model\Loan;
 
-final class TotalFeeCalculatorService implements FeeCalculatorService
+final readonly class TotalFeeCalculatorService implements FeeCalculatorService
 {
+    public function __construct(private CalculateFeeService $calculateFeeService) {}
     /**
      * @return float The calculated total fee.
      */
     public function calculate(Loan $loan): float
     {
-        if ($loan->term() === 12 && $loan->amount() > 1000.00) {
-            return 200.0;
-        }
-
-        throw InvalidArgumentException::loanIsInvalid();
+        return $this->calculateFeeService->calculateTotalFee($loan->term(), $loan->amount());
     }
 }
