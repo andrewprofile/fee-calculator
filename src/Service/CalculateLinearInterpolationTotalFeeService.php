@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Service;
 
-final readonly class CalculateLinearInterpolationFeeService implements CalculateFeeService
+final readonly class CalculateLinearInterpolationTotalFeeService implements CalculateTotalFeeService
 {
     public function calculateTotalFee(int $term, float $amount): float
     {

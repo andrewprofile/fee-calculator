@@ -12,7 +12,7 @@ use PragmaGoTech\Interview\Exception\InvalidArgumentException;
 use PragmaGoTech\Interview\Model\Amount;
 use PragmaGoTech\Interview\Model\Loan;
 use PragmaGoTech\Interview\Model\Term;
-use PragmaGoTech\Interview\Service\CalculateFeeService;
+use PragmaGoTech\Interview\Service\CalculateTotalFeeService;
 use PragmaGoTech\Interview\Service\FeeCalculatorService;
 use PragmaGoTech\Interview\Service\TotalFeeCalculatorService;
 
@@ -21,15 +21,15 @@ use PragmaGoTech\Interview\Service\TotalFeeCalculatorService;
 final class TotalFeeCalculatorServiceTest extends TestCase
 {
     private FeeCalculatorService $feeCalculatorService;
-    private MockObject $calculateFeeServiceMock;
+    private MockObject $calculateTotalFeeServiceMock;
 
     /**
      * @throws Exception
      */
     public function setUp(): void
     {
-        $this->calculateFeeServiceMock = $this->createMock(CalculateFeeService::class);
-        $this->feeCalculatorService = new TotalFeeCalculatorService($this->calculateFeeServiceMock);
+        $this->calculateTotalFeeServiceMock = $this->createMock(CalculateTotalFeeService::class);
+        $this->feeCalculatorService = new TotalFeeCalculatorService($this->calculateTotalFeeServiceMock);
     }
 
     public function testCalculateReturnsCorrectTotalFee(): void
@@ -38,7 +38,7 @@ final class TotalFeeCalculatorServiceTest extends TestCase
         $amount = new Amount(1000.00);
         $loan = new Loan($term, $amount);
 
-        $this->calculateFeeServiceMock
+        $this->calculateTotalFeeServiceMock
             ->expects($this->once())
             ->method('calculateTotalFee')
             ->with($loan->term(), $loan->amount())
