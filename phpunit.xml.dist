@@ -7,7 +7,7 @@
 >
     <testsuites>
         <testsuite name="Fee Calculator Test Suite">
-            <directory>./tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 
