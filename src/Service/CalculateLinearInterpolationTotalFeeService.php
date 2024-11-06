@@ -4,27 +4,37 @@ declare(strict_types=1);
 
 namespace PragmaGoTech\Interview\Service;
 
+use PragmaGoTech\Interview\Model\Amount;
+use PragmaGoTech\Interview\Model\Breakpoints;
+use PragmaGoTech\Interview\Model\BreakpointsCollection;
+use PragmaGoTech\Interview\Model\Term;
+
 final readonly class CalculateLinearInterpolationTotalFeeService implements CalculateTotalFeeService
 {
-    public function calculateTotalFee(int $term, float $amount): float
+    public function __construct(private BreakpointsCollection $breakpointsPool) {}
+    public function calculateTotalFee(Term $term, Amount $amount): float
     {
-        if ($term === 24 && $amount === 1000.00) {
-            return $this->accurateFee();
+        $breakpoints = $this->breakpointsPool->loadByTerm($term);
+        $fee = $this->accurateFee($breakpoints, $amount);
+
+        if ($fee !== null) {
+            return $fee;
         }
 
-        $interpolatedFee = $this->interpolatedFee($amount);
+        $interpolatedFee = $this->interpolatedFee($breakpoints, $amount);
 
         return $this->adjustFee($amount, $interpolatedFee);
     }
 
-    private function accurateFee(): float
+    private function accurateFee(Breakpoints $breakpoints, Amount $amount): ?float
     {
-        return round(70.00, 2);
+        $fee = $breakpoints->fee($amount);
+        return $fee !== null ? round($fee, 2) : null;
     }
 
-    private function adjustFee(float $amount, float $fee): float
+    private function adjustFee(Amount $amount, float $fee): float
     {
-        $total = $amount + $fee;
+        $total = $amount->amount() + $fee;
         if ($total % 5 !== 0) {
             $fee += (5 - ($total % 5));
         }
@@ -32,16 +42,16 @@ final readonly class CalculateLinearInterpolationTotalFeeService implements Calc
         return round($fee, 2);
     }
 
-    private function interpolatedFee(float $amount): float
+    private function interpolatedFee(Breakpoints $breakpoints, Amount $amount): float
     {
-        if ($amount < 2751.00) {
-            return 115.00;
-        }
+        $lowerBound = $breakpoints->lowerBoundAmount($amount);
+        $upperBound = $breakpoints->upperBoundAmount($amount);
+        $lowerFee = $breakpoints->lowerFee($lowerBound);
+        $upperFee = $breakpoints->upperFee($upperBound);
 
-        if ($amount > 3000.00) {
-            return 460.00;
-        }
+        $interpolatedFee = $lowerFee + (($amount->amount() - $lowerBound->amount()) /
+                ($upperBound->amount() - $lowerBound->amount())) * ($upperFee - $lowerFee);
 
-        return 116.00;
+        return ceil($interpolatedFee);
     }
 }

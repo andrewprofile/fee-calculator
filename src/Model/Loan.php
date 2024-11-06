@@ -16,16 +16,16 @@ final readonly class Loan
      * Term (loan duration) for this loan application
      * in number of months.
      */
-    public function term(): int
+    public function term(): Term
     {
-        return $this->term->term();
+        return $this->term;
     }
 
     /**
      * Amount requested for this loan application.
      */
-    public function amount(): float
+    public function amount(): Amount
     {
-        return $this->amount->amount();
+        return $this->amount;
     }
 }

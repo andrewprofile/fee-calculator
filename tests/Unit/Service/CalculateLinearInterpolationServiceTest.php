@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace PragmaGoTech\Interview\Unit\Service;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\Exception;
+use PragmaGoTech\Interview\Model\Amount;
+use PragmaGoTech\Interview\Model\BreakpointsCollection;
+use PragmaGoTech\Interview\Model\Term;
 use PragmaGoTech\Interview\Service\CalculateLinearInterpolationTotalFeeService;
 use PHPUnit\Framework\TestCase;
 
@@ -15,13 +19,20 @@ final class CalculateLinearInterpolationServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->calculateTotalFeeService = new CalculateLinearInterpolationTotalFeeService();
+        $breakpointsPool = new BreakpointsCollection();
+        $breakpointsPool->loadFromCSVByTerm(
+            new Term(24),
+            __DIR__. DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'
+            . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . '24.csv'
+        );
+
+        $this->calculateTotalFeeService = new CalculateLinearInterpolationTotalFeeService($breakpointsPool);
     }
 
     public function testCalculateTotalFeeWithExactValues(): void
     {
-        $term = 24;
-        $amount = 1000.00;
+        $term = new Term(24);
+        $amount = new Amount(1000.00);
 
         $result = $this->calculateTotalFeeService->calculateTotalFee($term, $amount);
 
@@ -30,14 +41,14 @@ final class CalculateLinearInterpolationServiceTest extends TestCase
 
     public function testCalculateTotalFeeWithInterpolatedValues(): void
     {
-        $term = 24;
-        $amount = 11500.00;
+        $term = new Term(24);
+        $amount = new Amount(11500.00);
 
         $result = $this->calculateTotalFeeService->calculateTotalFee($term, $amount);
 
         $this->assertEquals(460.00, $result);
 
-        $amount = 2750.00;
+        $amount = new Amount(2750.00);
 
         $result = $this->calculateTotalFeeService->calculateTotalFee($term, $amount);
 
@@ -46,8 +57,8 @@ final class CalculateLinearInterpolationServiceTest extends TestCase
 
     public function testCalculateTotalFeeAdjustsToNearestFive(): void
     {
-        $term = 24;
-        $amount = 2755.00;
+        $term = new Term(24);
+        $amount = new Amount(2755.00);
 
         $result = $this->calculateTotalFeeService->calculateTotalFee($term, $amount);
 

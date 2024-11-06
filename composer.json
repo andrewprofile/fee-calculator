@@ -31,6 +31,9 @@
     "scripts": {
         "test": "vendor/bin/phpunit",
         "code-coverage": "vendor/bin/phpunit --coverage-html raports",
-        "static-analize": "php ./vendor/bin/phpstan analyse -l 9 src tests && php ./vendor/bin/psalm.phar --config=psalm.xml.dist src && php ./vendor/bin/phpcs"
+        "static-analize": "php ./vendor/bin/phpstan analyse -l 9 src tests && php ./vendor/bin/psalm.phar --config=psalm.xml.dist --show-info=true src && php ./vendor/bin/phpcs"
+    },
+    "require": {
+        "moneyphp/money": "^4.5"
     }
 }

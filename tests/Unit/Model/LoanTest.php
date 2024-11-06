@@ -19,7 +19,7 @@ final class LoanTest extends TestCase
         $amount = new Amount(5000.00);
         $loan = new Loan($term, $amount);
 
-        $this->assertEquals(12, $loan->term());
+        $this->assertEquals(12, $loan->term()->term());
     }
 
     public function testLoanAmount(): void
@@ -28,6 +28,6 @@ final class LoanTest extends TestCase
         $amount = new Amount(5000.00);
         $loan = new Loan($term, $amount);
 
-        $this->assertEquals(5000.00, $loan->amount());
+        $this->assertEquals(5000.00, $loan->amount()->amount());
     }
 }
